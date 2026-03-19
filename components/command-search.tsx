@@ -24,11 +24,7 @@ import { useRouter } from "next/navigation";
 export function CommandSearch() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState<{ 
-    leads: { id: string, name: string, phone: string | null }[]; 
-    assets: { id: string, brand: string | null, model: string | null, plate: string | null, year: number | null }[]; 
-    publications: { id: string, title: string | null, asking_price: number }[] 
-  }>({ leads: [], assets: [], publications: [] });
+  const [results, setResults] = React.useState<{ leads: any[], assets: any[], publications: any[] }>({ leads: [], assets: [], publications: [] });
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 

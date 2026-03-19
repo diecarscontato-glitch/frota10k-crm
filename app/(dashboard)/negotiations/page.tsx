@@ -24,6 +24,7 @@ interface NegotiationWithPublication {
   current_value: number | null;
   updated_at: Date;
   publication: {
+    account_id: string;
     asking_price: number;
     account: { name: string | null };
     asset: {

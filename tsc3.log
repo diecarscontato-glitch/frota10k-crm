@@ -1,0 +1,6 @@
+components/command-search.tsx(97,35): error TS7006: Parameter 'lead' implicitly has an 'any' type.
+components/command-search.tsx(115,36): error TS7006: Parameter 'asset' implicitly has an 'any' type.
+components/command-search.tsx(133,42): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/invite-member-modal.tsx(4,10): error TS2305: Module '"@/app/actions/team"' has no exported member 'inviteMember'.
+lib/auth.ts(92,19): error TS2352: Conversion of type '{ user: AdapterUser; } & AdapterSession & Session' to type 'Record<string, Record<string, unknown>>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Index signature for type 'string' is missing in type '{ user: AdapterUser; } & AdapterSession & Session'.

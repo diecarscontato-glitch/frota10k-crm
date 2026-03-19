@@ -53,3 +53,35 @@ export async function toggleUserStatus(userId: string, currentStatus: string) {
   revalidatePath("/team");
   return user;
 }
+
+export async function inviteMember(data: { name: string; email: string; role: string }) {
+  const session = await auth();
+  const userData = session?.user as { id: string, accountId: string } | undefined;
+
+  if (!userData?.accountId) throw new Error("Não autorizado");
+
+  const invite = await db.invite.create({
+    data: {
+      account_id: userData.accountId,
+      invited_name: data.name,
+      invited_email: data.email,
+      role: data.role,
+      invited_by_user_id: userData.id,
+      status: "PENDING",
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    }
+  });
+
+  await createAuditLog({
+    accountId: userData.accountId,
+    actorUserId: userData.id,
+    eventType: "MEMBER_INVITED",
+    targetEntityType: "USER",
+    targetEntityId: invite.id,
+    summary: `Convite enviado para ${data.email} (${data.role})`,
+    severity: "INFO"
+  });
+
+  revalidatePath("/team");
+  return invite;
+}

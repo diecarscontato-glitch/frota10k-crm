@@ -1,8 +1,9 @@
 import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+import { authConfig } from "./lib/auth.config";
 
-export const proxy = NextAuth(authConfig).auth;
+export default NextAuth(authConfig).auth;
 
 export const config = {
+  // Match all routes except API, static files, and images
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
