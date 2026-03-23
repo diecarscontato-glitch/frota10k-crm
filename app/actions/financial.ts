@@ -4,91 +4,75 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function getFinancialSummary() {
-  const session = await auth();
-  const userData = session?.user as { id: string; accountId: string } | undefined;
-
-  if (!userData?.accountId) {
-    throw new Error("Não autorizado");
-  }
-
-  const records = await db.financialRecord.findMany({
-    where: { account_id: userData.accountId },
-    orderBy: { date: "desc" },
-  });
-
-  const categories = ["OPERACAO", "AQUISICAO", "FROTA", "QUITACAO"];
-  const summary: Record<string, { income: number; expense: number; balance: number; records: typeof records }> = {};
-
-  for (const cat of categories) {
-    const catRecords = records.filter((r) => r.category === cat);
-    const income = catRecords.filter((r) => r.type === "INCOME").reduce((acc, r) => acc + r.amount, 0);
-    const expense = catRecords.filter((r) => r.type === "EXPENSE").reduce((acc, r) => acc + r.amount, 0);
-    summary[cat] = {
-      income,
-      expense,
-      balance: income - expense,
-      records: catRecords.slice(0, 10), // last 10 per category
-    };
-  }
-
-  const recentRecords = records.slice(0, 20);
-
-  return { summary, recentRecords };
-}
-
-export async function createFinancialRecord(data: {
-  asset_id?: string;
-  type: string; // INCOME, EXPENSE
-  category: string; // OPERACAO, AQUISICAO, FROTA, QUITACAO
+export async function addFinancialRecord(data: {
+  asset_id: string;
+  type: string; // "INCOME" or "EXPENSE"
+  category: string;
   description: string;
   amount: number;
-  date?: string;
+  date: Date;
 }) {
   const session = await auth();
-  const userData = session?.user as { id: string; accountId: string } | undefined;
+  const userData = session?.user as { id: string, accountId: string } | undefined;
 
   if (!userData?.accountId) {
     throw new Error("Não autorizado");
+  }
+
+  // Verify asset ownership
+  const asset = await db.asset.findUnique({
+    where: { 
+      id: data.asset_id,
+      account_id: userData.accountId 
+    }
+  });
+
+  if (!asset) {
+    throw new Error("Ativo não encontrado ou não pertence a esta conta.");
   }
 
   const record = await db.financialRecord.create({
     data: {
       account_id: userData.accountId,
-      asset_id: data.asset_id || null,
+      asset_id: data.asset_id,
       type: data.type,
       category: data.category,
       description: data.description,
       amount: data.amount,
-      date: data.date ? new Date(data.date) : new Date(),
-    },
+      date: data.date
+    }
   });
 
-  revalidatePath("/financials");
-  if (data.asset_id) {
-    revalidatePath(`/assets/${data.asset_id}`);
+  if (asset.lead_id) {
+    revalidatePath(`/leads/${asset.lead_id}`);
   }
+  revalidatePath(`/assets/${asset.id}`);
+
   return record;
 }
 
-export async function getAssetFinancials(assetId: string) {
+export async function deleteFinancialRecord(recordId: string, leadId?: string) {
   const session = await auth();
-  const userData = session?.user as { id: string; accountId: string } | undefined;
+  const userData = session?.user as { id: string, accountId: string } | undefined;
 
   if (!userData?.accountId) {
     throw new Error("Não autorizado");
   }
 
-  const records = await db.financialRecord.findMany({
-    where: {
-      account_id: userData.accountId,
-      asset_id: assetId,
-    },
-    orderBy: { date: "desc" },
+  const record = await db.financialRecord.findUnique({
+    where: { id: recordId, account_id: userData.accountId }
   });
 
-  const income = records.filter((r) => r.type === "INCOME").reduce((acc, r) => acc + r.amount, 0);
-  const expense = records.filter((r) => r.type === "EXPENSE").reduce((acc, r) => acc + r.amount, 0);
+  if (!record) {
+    throw new Error("Registro financeiro não encontrado.");
+  }
 
-  return { records, income, expense, net: income - expense };
+  await db.financialRecord.delete({
+    where: { id: record.id }
+  });
+
+  if (leadId) revalidatePath(`/leads/${leadId}`);
+  if (record.asset_id) revalidatePath(`/assets/${record.asset_id}`);
+
+  return true;
 }

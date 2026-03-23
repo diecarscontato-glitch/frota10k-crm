@@ -33,6 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnalysisForm } from "@/components/analysis-form";
 import { LegalAnalysisForm } from "@/components/legal-analysis-form";
 import { ReceptionForm } from "@/components/reception-form";
+import { FinancialSheet } from "@/components/financial-sheet";
 import { db } from "@/lib/db";
 
 export default async function LeadDetailPage({ params }: { params: { id: string } }) {
@@ -53,6 +54,14 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   const receptionData = await db.receptionControl.findFirst({
     where: { lead_id: lead.id }
   });
+
+  // Fetch financial records related to the specific asset
+  const financialRecords = lead.assets[0]?.id 
+    ? await db.financialRecord.findMany({
+        where: { asset_id: lead.assets[0].id },
+        orderBy: { date: 'desc' }
+      })
+    : [];
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -81,6 +90,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
           <TabsTrigger value="analise" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Mesa de Análise</TabsTrigger>
           <TabsTrigger value="documentacao" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Documentação (Jurídico)</TabsTrigger>
           <TabsTrigger value="recebimento" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Frota/Pátio</TabsTrigger>
+          <TabsTrigger value="financeiro" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">Ficha Financeira</TabsTrigger>
         </TabsList>
 
         <TabsContent value="resumo" className="space-y-6 mt-0">
@@ -229,6 +239,10 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
 
         <TabsContent value="recebimento" className="mt-0">
           <ReceptionForm lead={lead} initialData={receptionData} />
+        </TabsContent>
+
+        <TabsContent value="financeiro" className="mt-0">
+          <FinancialSheet lead={lead} financialRecords={financialRecords} />
         </TabsContent>
       </Tabs>
     </div>
