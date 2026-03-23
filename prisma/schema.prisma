@@ -42,6 +42,11 @@ model Account {
   automation_rules          AutomationRule[]
   audit_logs                AuditLog[]
   financial_records         FinancialRecord[]
+  
+  // Wallet / Internal Marketplace
+  wallet_balance            Float               @default(0.0)
+  wallet_transactions       WalletTransaction[]
+  service_orders            ServiceOrder[]
 }
 
 model User {
@@ -76,6 +81,9 @@ model User {
   audit_logs            AuditLog[]
   legal_analyses        LegalAnalysis[]
   reception_controls    ReceptionControl[]
+  
+  // Internal Marketplace
+  requested_service_orders ServiceOrder[] @relation("requested_service_orders")
 }
 
 model Invite {
@@ -178,6 +186,7 @@ model Asset {
   publications          Publication[]
   tasks                 Task[]
   financial_records     FinancialRecord[]
+  service_orders        ServiceOrder[]
 }
 
 model Financing {
@@ -517,4 +526,43 @@ model FinancialRecord {
   
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+}
+
+// ==========================================
+// INTERNAL MARKETPLACE (M12 API INTEGRATION)
+// ==========================================
+
+model WalletTransaction {
+  id          String   @id @default(uuid())
+  account_id  String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  
+  type        String   // DEPOSIT, DEDUCTION
+  amount      Float
+  description String
+  
+  created_at  DateTime @default(now())
+}
+
+model ServiceOrder {
+  id               String   @id @default(uuid())
+  account_id       String
+  account          Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  asset_id         String?
+  asset            Asset?   @relation(fields: [asset_id], references: [id])
+  requested_by_id  String?
+  requested_by     User?    @relation("requested_service_orders", fields: [requested_by_id], references: [id])
+
+  type             String   // DOSSIE_VEICULAR, DOSSIE_JURIDICO
+  status           String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  provider         String   @default("M12")
+  
+  cost_to_tenant   Float    // E.g., 60.00
+  cost_to_platform Float    // E.g., 34.90
+  
+  result_data      Json?    // The API full response
+  pdf_url          String?
+  
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 }

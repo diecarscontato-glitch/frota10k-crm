@@ -34,6 +34,7 @@ import { AnalysisForm } from "@/components/analysis-form";
 import { LegalAnalysisForm } from "@/components/legal-analysis-form";
 import { ReceptionForm } from "@/components/reception-form";
 import { FinancialSheet } from "@/components/financial-sheet";
+import { M12Marketplace } from "@/components/m12-marketplace";
 import { db } from "@/lib/db";
 
 export default async function LeadDetailPage({ params }: { params: { id: string } }) {
@@ -233,8 +234,19 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
           <AnalysisForm lead={lead} initialAnalysis={analysis} />
         </TabsContent>
 
-        <TabsContent value="documentacao" className="mt-0">
+        <TabsContent value="documentacao" className="mt-0 space-y-8">
           <LegalAnalysisForm lead={lead} initialData={legalAnalysis} />
+          
+          <div className="bg-slate-900/40 p-6 rounded-xl border border-blue-900/30">
+            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+              <span className="bg-blue-600 text-white rounded-md px-2 py-0.5 text-sm font-black mr-2">M12</span>
+              Integração de Consultas Oficiais
+            </h3>
+            <p className="text-slate-400 text-sm mb-6">
+              Emita Dossiês Veiculares e Judiciais usando seu saldo de conta. As consultas processam em tempo real.
+            </p>
+            <M12Marketplace assetId={lead?.assets?.[0]?.id} />
+          </div>
         </TabsContent>
 
         <TabsContent value="recebimento" className="mt-0">
