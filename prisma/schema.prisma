@@ -75,6 +75,7 @@ model User {
   automation_rules      AutomationRule[]
   audit_logs            AuditLog[]
   legal_analyses        LegalAnalysis[]
+  reception_controls    ReceptionControl[]
 }
 
 model Invite {
@@ -138,6 +139,7 @@ model Lead {
   tasks            Task[]
   analyses         Analysis[]
   legal_analysis   LegalAnalysis?
+  reception_control ReceptionControl?
 }
 
 model Asset {
@@ -163,13 +165,6 @@ model Asset {
   market_value    Float?
   rental_eligible Boolean @default(false)
   status          String  @default("SCREENING")
-  
-  // Logistics/Reception
-  received_at     DateTime?
-  reception_km    Int?
-  tracker_installed Boolean @default(false)
-  insurance_active Boolean @default(false)
-  hygiene_done    Boolean @default(false)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -177,6 +172,7 @@ model Asset {
   financing             Financing?
   analyses              Analysis[]
   legal_analysis        LegalAnalysis?
+  reception_control     ReceptionControl?
   destination_decisions DestinationDecision[]
   documents             Document[]
   publications          Publication[]
@@ -271,6 +267,40 @@ model LegalAnalysis {
   
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
+}
+
+model ReceptionControl {
+  id              String  @id @default(uuid())
+  asset_id        String  @unique
+  asset           Asset   @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+  lead_id         String? @unique
+  lead            Lead?   @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  receiver_user_id String?
+  receiver        User?   @relation(fields: [receiver_user_id], references: [id])
+
+  // Checklist Físico
+  has_manual        Boolean @default(false)
+  has_reserve_key   Boolean @default(false)
+  has_stepe         Boolean @default(false)
+  has_jack          Boolean @default(false)
+  
+  // Condição
+  paint_condition   String? // EXCELENTE, BOM, RUIM
+  tires_condition   String? // NOVOS, MEIA-VIDA, TROCAR
+  structural_damage Boolean @default(false)
+  
+  // Operacional Frota
+  reception_km      Int?
+  tracker_installed Boolean @default(false)
+  insurance_active  Boolean @default(false)
+  hygiene_done      Boolean @default(false)
+  
+  received_at       DateTime?
+  reception_notes   String?
+  verdict           String?  // APROVADO, PENDENCIAS, RECUSADO
+  
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
 }
 
 model Document {
