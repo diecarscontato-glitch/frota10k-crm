@@ -3,14 +3,17 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { requirePermission } from "@/lib/permissions";
 
 export async function saveAnalysis(data: any) {
   const session = await auth();
-  const userData = session?.user as { id: string, accountId: string } | undefined;
+  const userData = session?.user as { id: string; accountId: string; role?: string } | undefined;
 
   if (!userData?.accountId) {
     throw new Error("Não autorizado");
   }
+
+  requirePermission(userData.role ?? "viewer", "analysis.write");
 
   // 1. Save or Update Analysis
   const existingAnalysis = await db.analysis.findFirst({

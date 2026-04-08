@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import nodemailer from "nodemailer";
 
 // CUSTOS FIXOS BASEADOS NO NOVO MODELO DE NEGÓCIO:
 // Dossiê Jurídico - Preço de Venda (Tenant): R$ 60.00 | Custo M12 (OFC API): R$ 34.90
@@ -77,6 +78,14 @@ export async function requestM12Service(assetId: string, type: "DOSSIE_JURIDICO"
       throw new Error("Saldo insuficiente na Wallet. Adicione créditos para continuar.");
     }
 
+    // Buscar detalhes do Ativo e do Lead para enviar no e-mail
+    const asset = await tx.asset.findUnique({
+      where: { id: assetId },
+      include: { lead: true }
+    });
+
+    if (!asset) throw new Error("Ativo não encontrado.");
+
     // 1. Debitar saldo da Wallet
     await tx.walletTransaction.create({
       data: {
@@ -92,29 +101,62 @@ export async function requestM12Service(assetId: string, type: "DOSSIE_JURIDICO"
       data: { wallet_balance: { decrement: pricing.tenant_cost } }
     });
 
-    // 2. Chamar a API M12 (Consultas OFC)
-    // Aqui no futuro trocaremos pelo axios/fetch real para `https://wl-platform-backend.consultasofc.com.br/v1/public/`
-    const mockApiResult = {
-      status: "COMPLETED",
-      data: {
-        protocol: `M12-${Date.now()}`,
-        status: "NADA_CONSTA",
-        message: "Simulação: Retorno de dados completos da API Consultas OFC"
+    // 2. Enviar a Ordem de Serviço via e-mail (Gmail + Nodemailer)
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      throw new Error("Credenciais do e-mail (GMAIL_USER e GMAIL_PASS) não configuradas no servidor.");
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
       }
+    });
+
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: "contato@m12.com.br", // Substituto do e-mail da M12
+      subject: `Nova Ordem de Serviço: ${pricing.name} - Placa ${asset.plate || 'N/A'}`,
+      text: `Olá equipe M12,
+
+Foi solicitada uma nova Ordem de Serviço pelo sistema FROTA10K.
+
+Serviço Solicitado: ${pricing.name}
+Empresa (Tenant): ${account.name}
+
+DADOS DO VEÍCULO E PROPRIETÁRIO:
+Marca/Modelo: ${asset.brand || ''} ${asset.model || ''}
+Placa: ${asset.plate || 'Não informada'}
+Renavam: ${asset.renavam || 'Não informado'}
+Nome do Proprietário: ${asset.lead?.name || 'Não informado'}
+CPF do Proprietário: ${asset.lead?.cpf || 'Não informado'}
+
+Por favor, executem o serviço e enviem o Dossiê para a plataforma ou de volta por e-mail.
+
+Atenciosamente,
+Sistema FROTA10K`
     };
 
-    // 3. Registrar a Ordem de Serviço (O.S)
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error("Erro ao enviar email M12:", error);
+      throw new Error("Falha de envio: A configuração do e-mail falhou. Contate o suporte.");
+    }
+
+    // 3. Registrar a Ordem de Serviço (O.S) no banco como PENDENTE/PROCESSANDO
     const os = await tx.serviceOrder.create({
       data: {
         account_id: account.id,
         asset_id: assetId,
         requested_by_id: userData.id,
         type: type,
-        status: "COMPLETED",
+        status: "PROCESSING",
         cost_to_tenant: pricing.tenant_cost,
         cost_to_platform: pricing.platform_cost,
-        result_data: mockApiResult,
-        pdf_url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        result_data: { message: "Aguardando retorno manual da M12 por e-mail." },
+        pdf_url: null // Retirado o mock estático do PDF
       }
     });
 

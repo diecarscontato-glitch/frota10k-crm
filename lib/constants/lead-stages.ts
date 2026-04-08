@@ -1,19 +1,17 @@
 export const LEAD_STAGES = [
-  { value: "NEW", label: "Lead novo", color: "blue" },
-  { value: "CONTACTED", label: "Contato iniciado", color: "sky" },
-  { value: "INCOMPLETE", label: "Dados incompletos", color: "amber" },
-  { value: "READY_FOR_ANALYSIS", label: "Pronto para análise", color: "indigo" },
-  { value: "FINANCIAL_ANALYSIS", label: "Em análise financeira", color: "purple" },
-  { value: "LEGAL_ANALYSIS", label: "Em análise jurídica", color: "fuchsia" },
-  { value: "APPROVED", label: "Aprovado", color: "emerald" },
-  { value: "NEGOTIATING", label: "Negociação em andamento", color: "orange" },
-  { value: "PENDING_DOCS", label: "Documentação pendente", color: "yellow" },
-  { value: "DOCS_DONE", label: "Documentação concluída", color: "teal" },
-  { value: "VEHICLE_RECEIVED", label: "Veículo recebido", color: "cyan" },
-  { value: "IN_FLEET", label: "Em operação / frota", color: "green" },
-  { value: "EXITING", label: "Em saída / quitação / venda", color: "violet" },
-  { value: "CLOSED", label: "Encerrado", color: "slate" },
-  { value: "DISCARDED", label: "Recusado / descartado", color: "red" }
+  { value: "NEW", label: "Lead Novo", color: "blue" },
+  { value: "CONTACTED", label: "Contato Iniciado", color: "sky" },
+  { value: "QUALIFICATION", label: "Em Qualificação", color: "indigo" },
+  { value: "NEGOTIATION", label: "Mesa de Decisão", color: "amber" },
+  { value: "WON", label: "Aprovado", color: "emerald" },
+  { value: "LOST", label: "Recusado", color: "red" },
+  { value: "READY_FOR_ANALYSIS", label: "Pronto para Análise", color: "indigo" },
+  { value: "FINANCIAL_ANALYSIS", label: "Em Análise Financeira", color: "purple" },
+  { value: "PENDING_DOCS", label: "Doc. Pendente", color: "yellow" },
+  { value: "DOCS_DONE", label: "Doc. Concluída", color: "teal" },
+  { value: "VEHICLE_RECEIVED", label: "Veículo Recebido", color: "cyan" },
+  { value: "IN_FLEET", label: "Na Frota", color: "green" },
+  { value: "CLOSED", label: "Encerrado", color: "slate" }
 ];
 
 export function getStatusLabel(status: string) {
@@ -44,4 +42,17 @@ export function getStatusColorClass(status: string) {
   };
   
   return colorMap[color] || colorMap["slate"];
+}
+
+export const ASSET_STATUS = [
+  { value: "SCREENING", label: "Triagem", color: "blue" },
+  { value: "COMMITTEE", label: "Em Comitê", color: "amber" },
+  { value: "IN_STOCK", label: "No Estoque", color: "emerald" },
+  { value: "MARKETPLACE", label: "No Marketplace", color: "sky" },
+  { value: "REJECTED", label: "Recusado", color: "red" },
+  { value: "SOLD", label: "Vendido", color: "slate" },
+];
+
+export function getAssetStatusLabel(status: string) {
+  return ASSET_STATUS.find(s => s.value === status)?.label || status;
 }

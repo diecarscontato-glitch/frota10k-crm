@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { createAuditLog } from "@/lib/audit";
+import { requirePermission } from "@/lib/permissions";
 
 export async function getTeamMembers() {
   const session = await auth();
@@ -29,9 +30,10 @@ export async function getTeamMembers() {
 
 export async function toggleUserStatus(userId: string, currentStatus: string) {
   const session = await auth();
-  const userData = session?.user as { id: string, accountId: string } | undefined;
+  const userData = session?.user as { id: string; accountId: string; role?: string } | undefined;
 
   if (!userData?.accountId) throw new Error("Não autorizado");
+  requirePermission(userData.role ?? "viewer", "*");
 
   const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
 
@@ -56,9 +58,10 @@ export async function toggleUserStatus(userId: string, currentStatus: string) {
 
 export async function inviteMember(data: { name: string; email: string; role: string }) {
   const session = await auth();
-  const userData = session?.user as { id: string, accountId: string } | undefined;
+  const userData = session?.user as { id: string; accountId: string; role?: string } | undefined;
 
   if (!userData?.accountId) throw new Error("Não autorizado");
+  requirePermission(userData.role ?? "viewer", "*");
 
   const invite = await db.invite.create({
     data: {

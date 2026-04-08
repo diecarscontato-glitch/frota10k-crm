@@ -96,7 +96,7 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-white text-lg">Dossiê Jurídico Cível/Trabalhista</CardTitle>
-                <CardDescription>Consulta completa Jusbrasil, Trabalhista, Renajud (API M12).</CardDescription>
+                <CardDescription>Ordem de Serviço enviada diretamente à M12.</CardDescription>
               </div>
               <span className="bg-slate-800 text-white font-mono px-3 py-1 rounded-full text-sm font-bold border border-slate-700">
                 R$ 60,00
@@ -118,7 +118,7 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
             >
               {loadingType === "DOSSIE_JURIDICO" ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
-              Gerar Dossiê Instantâneo
+              Solicitar Ordem de Serviço
             </Button>
           </CardFooter>
         </Card>
@@ -129,7 +129,7 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-white text-lg">Dossiê Veicular Completo</CardTitle>
-                <CardDescription>Consulta BIN, Leilão, Sinistro, Histórico Securitário (API M12).</CardDescription>
+                <CardDescription>Ordem de Serviço enviada diretamente à M12.</CardDescription>
               </div>
               <span className="bg-slate-800 text-white font-mono px-3 py-1 rounded-full text-sm font-bold border border-slate-700">
                 R$ 80,00
@@ -151,7 +151,7 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
             >
               {loadingType === "DOSSIE_VEICULAR" ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
-              Gerar Dossiê Instantâneo
+              Solicitar Ordem de Serviço
             </Button>
           </CardFooter>
         </Card>
@@ -174,9 +174,9 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
                 <div className="flex items-center gap-3">
                   <span className={cn(
                     "text-xs px-2 py-1 rounded-full font-bold",
-                    os.status === "COMPLETED" ? "bg-emerald-500/20 text-emerald-400" : "bg-yellow-500/20 text-yellow-400"
+                    os.status === "COMPLETED" ? "bg-emerald-500/20 text-emerald-400" : os.status === "PROCESSING" ? "bg-blue-500/20 text-blue-400" : "bg-yellow-500/20 text-yellow-400"
                   )}>
-                    {os.status}
+                    {os.status === "PROCESSING" ? "EM ANÁLISE NA M12" : os.status}
                   </span>
                   {os.pdf_url && (
                     <a href={os.pdf_url} target="_blank" rel="noreferrer" className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-1">

@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 export function CommandSearch() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState<{ leads: any[], assets: any[], publications: any[] }>({ leads: [], assets: [], publications: [] });
+  const [results, setResults] = React.useState<Awaited<ReturnType<typeof globalSearch>>>({ leads: [], assets: [], publications: [] });
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
@@ -94,7 +94,7 @@ export function CommandSearch() {
           
           {results.leads.length > 0 && (
             <CommandGroup heading="Leads">
-              {results.leads.map((lead) => (
+              {results.leads.map((lead: any) => (
                 <CommandItem
                   key={lead.id}
                   onSelect={() => runCommand(() => router.push(`/leads/${lead.id}`))}
@@ -112,7 +112,7 @@ export function CommandSearch() {
 
           {results.assets.length > 0 && (
             <CommandGroup heading="Ativos">
-              {results.assets.map((asset) => (
+              {results.assets.map((asset: any) => (
                 <CommandItem
                   key={asset.id}
                   onSelect={() => runCommand(() => router.push(`/assets/${asset.id}`))}
@@ -130,7 +130,7 @@ export function CommandSearch() {
 
           {results.publications.length > 0 && (
             <CommandGroup heading="Marketplace">
-              {results.publications.map((item) => (
+              {results.publications.map((item: any) => (
                 <CommandItem
                   key={item.id}
                   onSelect={() => runCommand(() => router.push(`/marketplace/${item.id}`))}
@@ -139,7 +139,7 @@ export function CommandSearch() {
                   <Store className="h-4 w-4 text-purple-500" />
                   <div className="flex flex-col">
                     <span className="font-bold text-slate-200">{item.title}</span>
-                    <span className="text-[10px] text-slate-500">R$ {item.asking_price.toLocaleString()}</span>
+                    <span className="text-[10px] text-slate-500">R$ {item.asking_price?.toLocaleString() ?? "---"}</span>
                   </div>
                 </CommandItem>
               ))}

@@ -1,22 +1,22 @@
 import React from "react";
 import { getPublicationById } from "@/app/actions/marketplace";
 import { auth } from "@/lib/auth";
-import { 
-  Car, 
-  Bike, 
-  ChevronLeft, 
-  BadgeDollarSign, 
-  Calendar, 
-  Gauge, 
-  Palette, 
-  Hash,
+import {
+  Car,
+  Bike,
+  ChevronLeft,
+  BadgeDollarSign,
+  Calendar,
+  Gauge,
+  Palette,
   ShieldCheck,
   FileText,
   Building2,
   Info,
   CheckCircle2,
   AlertTriangle,
-  Users
+  Users,
+  TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -33,9 +33,10 @@ import { InterestButton } from "@/components/interest-button";
  
 export const dynamic = "force-dynamic";
 
-export default async function MarketplaceDetailPage({ params }: { params: { id: string } }) {
+export default async function MarketplaceDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await auth();
-  const publication = await getPublicationById(params.id);
+  const publication = await getPublicationById(id);
 
   if (!publication) {
     notFound();
@@ -153,6 +154,72 @@ export default async function MarketplaceDetailPage({ params }: { params: { id: 
                           &quot;{analysis.general_notes}&quot;
                        </div>
                     )}
+                 </div>
+               )}
+
+               {/* Financial Analysis from DIECAR committee */}
+               {analysis && (analysis.fipe_value || analysis.total_debt_estimated || analysis.verdict) && (
+                 <div className="space-y-4">
+                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                     <TrendingUp className="w-5 h-5 text-emerald-500" />
+                     Análise Financeira do Comitê
+                   </h3>
+                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                     {analysis.fipe_value && (
+                       <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                         <p className="text-[9px] text-slate-500 uppercase font-bold mb-1">FIPE</p>
+                         <p className="text-lg font-black text-white">
+                           {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(analysis.fipe_value)}
+                         </p>
+                       </div>
+                     )}
+                     {analysis.total_debt_estimated && (
+                       <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                         <p className="text-[9px] text-slate-500 uppercase font-bold mb-1">Saldo Devedor Est.</p>
+                         <p className="text-lg font-black text-red-400">
+                           {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(analysis.total_debt_estimated)}
+                         </p>
+                       </div>
+                     )}
+                     {analysis.fipe_value && analysis.total_debt_estimated && (
+                       <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                         <p className="text-[9px] text-slate-500 uppercase font-bold mb-1">Margem Bruta</p>
+                         <p className={`text-lg font-black ${(analysis.fipe_value - analysis.total_debt_estimated) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                           {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(analysis.fipe_value - analysis.total_debt_estimated)}
+                         </p>
+                       </div>
+                     )}
+                   </div>
+                   {(analysis.verdict || analysis.bank_profile) && (
+                     <div className="flex items-center gap-3 flex-wrap">
+                       {analysis.verdict && (
+                         <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase border ${
+                           analysis.verdict === "APROVADO"
+                             ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                             : analysis.verdict === "NEGOCIAR"
+                             ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                             : "bg-red-500/10 border-red-500/30 text-red-400"
+                         }`}>
+                           {analysis.verdict === "APROVADO" ? "🟢" : analysis.verdict === "NEGOCIAR" ? "🟡" : "🔴"} {analysis.verdict}
+                         </span>
+                       )}
+                       {analysis.bank_profile && (
+                         <span className="px-3 py-1 rounded-lg text-xs font-bold uppercase bg-blue-500/10 border border-blue-500/30 text-blue-400">
+                           Banco: {analysis.bank_profile}
+                         </span>
+                       )}
+                       {analysis.ready_for_committee && (
+                         <span className="px-3 py-1 rounded-lg text-xs font-bold uppercase bg-purple-500/10 border border-purple-500/30 text-purple-400">
+                           ✓ Aprovado pelo Comitê
+                         </span>
+                       )}
+                     </div>
+                   )}
+                   {analysis.recommendation && (
+                     <div className="p-4 rounded-xl bg-blue-600/5 border border-blue-500/10 text-slate-400 text-sm italic">
+                       &quot;{analysis.recommendation}&quot;
+                     </div>
+                   )}
                  </div>
                )}
 

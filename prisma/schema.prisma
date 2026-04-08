@@ -110,6 +110,7 @@ model Lead {
   account_id           String
   account              Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
   name                 String
+  cpf                  String?
   phone                String?
   city                 String?
   state                String?
@@ -163,6 +164,7 @@ model Asset {
   version         String?
   year            Int?
   plate           String?
+  renavam         String?
   km              Int?
   color           String?
   city            String?

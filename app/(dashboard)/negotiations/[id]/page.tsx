@@ -27,9 +27,10 @@ interface SessionUser {
   accountId: string;
 }
 
-export default async function NegotiationDetailPage({ params }: { params: { id: string } }) {
+export default async function NegotiationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await auth();
-  const negotiation = await getNegotiationById(params.id);
+  const negotiation = await getNegotiationById(id);
 
   if (!negotiation) {
     notFound();

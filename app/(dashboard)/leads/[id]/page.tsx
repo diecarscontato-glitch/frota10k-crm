@@ -37,8 +37,9 @@ import { FinancialSheet } from "@/components/financial-sheet";
 import { M12Marketplace } from "@/components/m12-marketplace";
 import { db } from "@/lib/db";
 
-export default async function LeadDetailPage({ params }: { params: { id: string } }) {
-  const lead = await getLeadById(params.id);
+export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const lead = await getLeadById(id);
 
   if (!lead) {
     notFound();

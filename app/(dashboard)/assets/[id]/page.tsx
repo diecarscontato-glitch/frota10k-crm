@@ -35,8 +35,9 @@ import { AssetActionManager } from "@/components/asset-action-manager";
  
 export const dynamic = "force-dynamic";
 
-export default async function AssetDetailPage({ params }: { params: { id: string } }) {
-  const asset = await getAssetById(params.id);
+export default async function AssetDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const asset = await getAssetById(id);
 
   if (!asset) {
     notFound();

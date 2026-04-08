@@ -16,14 +16,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Filter, Search, Phone, MapPin, User as UserIcon, ChevronRight } from "lucide-react";
+import { Filter, Search, Phone, MapPin, User as UserIcon, ChevronRight, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LeadIntakeModal } from "@/components/lead-intake-modal";
 import { ImportLeadsModal } from "@/components/import-leads-modal";
 import { EditLeadModal } from "@/components/edit-lead-modal";
+import { DecideLeadModal } from "@/components/decide-lead-modal";
 import Link from "next/link";
 
 import { getStatusColorClass, getStatusLabel } from "@/lib/constants/lead-stages";
+
+const getUrgencyBadge = (urgency: string | null) => {
+  if (urgency === 'HIGH') return <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_10px_-3px_rgba(239,68,68,0.4)] flex w-fit gap-1 items-center"><Activity className="w-3 h-3" /> HOT</span>;
+  if (urgency === 'MEDIUM') return <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20">WARM</span>;
+  if (urgency === 'LOW') return <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-500 border border-blue-500/20">COLD</span>;
+  return <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700">--</span>;
+}
 
 export default async function LeadsPage() {
   const leads = await getLeads();
@@ -84,6 +92,7 @@ export default async function LeadsPage() {
                 <TableHead className="text-slate-400">Contato</TableHead>
                 <TableHead className="text-slate-400">Localização</TableHead>
                 <TableHead className="text-slate-400">Responsável</TableHead>
+                <TableHead className="text-slate-400">Temp.</TableHead>
                 <TableHead className="text-slate-400">Status</TableHead>
                 <TableHead className="text-slate-400 text-right">Ações</TableHead>
               </TableRow>
@@ -91,7 +100,7 @@ export default async function LeadsPage() {
             <TableBody>
               {leads.length === 0 ? (
                 <TableRow>
-                   <TableCell colSpan={6} className="h-40 text-center text-slate-500">
+                   <TableCell colSpan={7} className="h-40 text-center text-slate-500">
                       Nenhum lead encontrado. Comece captando um novo ativo.
                    </TableCell>
                 </TableRow>
@@ -136,6 +145,9 @@ export default async function LeadsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
+                      {getUrgencyBadge(lead.urgency)}
+                    </TableCell>
+                    <TableCell>
                        <span className={cn(
                         "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border",
                         getStatusColorClass(lead.status)
@@ -145,6 +157,9 @@ export default async function LeadsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {lead.status === 'NEGOTIATION' && (
+                          <DecideLeadModal lead={lead} />
+                        )}
                         <EditLeadModal lead={lead} isIcon />
                         <Link href={`/leads/${lead.id}`}>
                           <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-slate-800" title="Ver Detalhes">
