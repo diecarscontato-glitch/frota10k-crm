@@ -13,10 +13,10 @@ export default async function SettingsPage() {
   ]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Configurações</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Configurações</h1>
           <p className="text-slate-400 mt-1">
             Gerencie sua conta, perfil e preferências de notificação.
           </p>

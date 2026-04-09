@@ -47,10 +47,10 @@ export default async function AutomationsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight flex items-center gap-3">
             <Zap className="w-8 h-8 text-yellow-500" />
             Automações & Inteligência
           </h1>

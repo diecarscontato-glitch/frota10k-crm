@@ -60,7 +60,7 @@ export default async function MarketplacePage({
         </p>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         {publications.length === 0 ? (
           <div className="col-span-full h-80 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-3xl text-slate-600">
             <TrendingUp className="w-12 h-12 mb-4 opacity-20" />
@@ -194,14 +194,12 @@ export default async function MarketplacePage({
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Marketplace Privado</h1>
-          <p className="text-slate-400 mt-1">
-            Explore oportunidades qualificadas de ágio e repasse na rede FROTA10K.
-          </p>
-        </div>
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Marketplace Privado</h1>
+        <p className="text-slate-400 mt-1 text-sm md:text-base">
+          Explore oportunidades qualificadas de ágio e repasse na rede FROTA10K.
+        </p>
       </div>
 
       <MarketplaceTabs

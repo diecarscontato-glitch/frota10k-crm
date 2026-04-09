@@ -3,9 +3,9 @@ import { BookOpen, FileText, Clock } from "lucide-react";
 
 export default function TemplatesPage() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-10">
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight flex items-center gap-3">
           <BookOpen className="w-8 h-8 text-emerald-500" />
           Templates & Padrões
         </h1>

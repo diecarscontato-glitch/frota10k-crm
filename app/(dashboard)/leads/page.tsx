@@ -37,23 +37,23 @@ export default async function LeadsPage() {
   const leads = await getLeads();
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-white">Esteira de Leads</h1>
-          <p className="text-slate-400 mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Esteira de Leads</h1>
+          <p className="text-slate-400 mt-1 text-sm md:text-base">
             Gestão operacional de entrada e triagem de oportunidades.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <ImportLeadsModal />
           <LeadIntakeModal />
         </div>
       </div>
 
       {/* Filters bar */}
-      <div className="flex flex-wrap items-center gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800 backdrop-blur-md">
-        <div className="flex-1 min-w-[240px] relative">
+      <div className="flex flex-wrap items-center gap-3 md:gap-4 bg-slate-900/50 p-3 md:p-4 rounded-xl border border-slate-800 backdrop-blur-md">
+        <div className="flex-1 min-w-0 sm:min-w-[240px] relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
           <input
             placeholder="Filtrar por nome ou celular..."
@@ -84,7 +84,8 @@ export default async function LeadsPage() {
             <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Leads no total</p>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-0 sm:px-6">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader className="border-slate-800">
               <TableRow className="hover:bg-transparent border-slate-800">
@@ -173,6 +174,7 @@ export default async function LeadsPage() {
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

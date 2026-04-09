@@ -68,7 +68,7 @@ export default async function MarketplaceDetailPage({ params }: { params: Promis
                      {asset.type === "CAR" ? <Car className="w-8 h-8" /> : <Bike className="w-8 h-8" />}
                   </div>
                   <div>
-                     <h1 className="text-3xl font-bold text-white">{publication.title}</h1>
+                     <h1 className="text-2xl md:text-3xl font-bold text-white">{publication.title}</h1>
                      <p className="text-slate-400 mt-1 uppercase font-semibold tracking-widest text-xs">
                         {asset.brand} • {asset.model} • {asset.year}
                      </p>

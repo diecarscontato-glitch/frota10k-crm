@@ -51,9 +51,9 @@ export default async function AuditLogsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-16 md:pb-0">
       <div>
-        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
           <History className="w-8 h-8 text-blue-500" />
           Logs de Auditoria
         </h1>

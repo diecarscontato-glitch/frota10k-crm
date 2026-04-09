@@ -66,13 +66,13 @@ const NegotiationList = ({ items, type, myAccountId }: { items: NegotiationWithP
         return (
           <Link key={neg.id} href={`/negotiations/${neg.id}`}>
             <Card className="bg-slate-900/50 border-slate-800 hover:border-blue-500/30 transition-all cursor-pointer group hover:shadow-lg hover:shadow-blue-500/5">
-              <div className="flex items-center p-5 gap-5">
-                 <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 shrink-0 group-hover:scale-110 transition-transform">
-                    {neg.publication.asset.type === "CAR" ? <Car className="w-6 h-6" /> : <Bike className="w-6 h-6" />}
+              <div className="flex items-center p-4 md:p-5 gap-3 md:gap-5">
+                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 shrink-0 group-hover:scale-110 transition-transform">
+                    {neg.publication.asset.type === "CAR" ? <Car className="w-5 h-5 md:w-6 md:h-6" /> : <Bike className="w-5 h-5 md:w-6 md:h-6" />}
                  </div>
 
                  <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                        <h3 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                           {neg.publication.asset.brand} {neg.publication.asset.model}
                        </h3>
@@ -120,15 +120,15 @@ export default async function NegotiationsPage() {
   const sales = negotiations.filter((n) => n.publication.account_id === myAccountId);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Mesa de Acordos</h1>
-          <p className="text-slate-400 mt-1 text-sm">
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Mesa de Acordos</h1>
+          <p className="text-slate-400 mt-1 text-xs md:text-sm">
             Gerencie suas propostas de compra e acompanhe as ofertas recebidas em seus ativos.
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-3 md:gap-4">
            <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl">
               <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-0.5">Abertas</p>
               <p className="text-xl font-black text-blue-500 leading-none">{negotiations.filter((n) => n.status === 'OPEN').length}</p>
@@ -141,7 +141,7 @@ export default async function NegotiationsPage() {
       </div>
 
       <div className="space-y-6">
-         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             <div className="space-y-4">
                <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
                   <div className="p-1.5 bg-blue-500/10 rounded-lg">

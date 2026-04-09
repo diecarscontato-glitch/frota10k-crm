@@ -63,33 +63,33 @@ export default async function DashboardPage() {
 // 
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
       <div>
-        <h1 className="text-3xl font-bold text-white">Bem-vindo ao Centro de Comando</h1>
-        <p className="text-slate-400 mt-1">Aqui está o que está acontecendo na sua operação hoje.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Bem-vindo ao Centro de Comando</h1>
+        <p className="text-slate-400 mt-1 text-sm md:text-base">Aqui está o que está acontecendo na sua operação hoje.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <Card key={i} className="bg-slate-900/50 border-slate-800 hover:border-slate-700 transition-all group">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400 group-hover:text-slate-300 transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 md:p-6">
+                <CardTitle className="text-xs md:text-sm font-medium text-slate-400 group-hover:text-slate-300 transition-colors">
                   {stat.title}
                 </CardTitle>
-                <div className={`p-2 rounded-lg transition-colors ${stat.color}`}>
-                  <Icon className="w-5 h-5" />
+                <div className={`p-1.5 md:p-2 rounded-lg transition-colors ${stat.color}`}>
+                  <Icon className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
+              <CardContent className="px-4 md:px-6 pb-4 md:pb-6 pt-0">
+                <div className="text-xl md:text-2xl font-bold text-white">{stat.value}</div>
                 <div className="flex items-center gap-1 mt-1">
                   {stat.trend === "up" && <ArrowUpRight className="w-3 h-3 text-emerald-500" />}
                   {stat.trend === "down" && <ArrowDownRight className="w-3 h-3 text-red-500" />}
                   {stat.trend === "neutral" && <Clock className="w-3 h-3 text-slate-500" />}
-                  <p className="text-xs text-slate-500 font-medium">{stat.description}</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 font-medium">{stat.description}</p>
                 </div>
               </CardContent>
             </Card>
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Main Content Areas */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         {/* Recent Activity / Agenda */}
         <Card className="lg:col-span-2 bg-slate-900/50 border-slate-800">
           <CardHeader>
@@ -111,19 +111,19 @@ export default async function DashboardPage() {
                 <p className="text-sm text-slate-500 italic">Nenhum ativo recente encontrado.</p>
               ) : (
                 metrics.recentAssets.map((asset) => (
-                  <div key={asset.id} className="flex items-center justify-between p-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white">
+                  <div key={asset.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer group gap-2 sm:gap-4">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                      <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
                         {asset.brand?.slice(0, 2).toUpperCase() || "VE"}
                       </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">
+                      <div className="min-w-0">
+                        <h4 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
                           {asset.brand} {asset.model} - {asset.year}
                         </h4>
-                        <p className="text-xs text-slate-500 mt-0.5">Placa: {asset.plate || "N/A"} • Status: {getAssetStatusLabel(asset.status)}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 truncate">Placa: {asset.plate || "N/A"} • {getAssetStatusLabel(asset.status)}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 ml-12 sm:ml-0 shrink-0">
                       <span className="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
                         {getAssetStatusLabel(asset.status)}
                       </span>
@@ -179,13 +179,13 @@ export default async function DashboardPage() {
 
       {/* Últimos Leads do SDR */}
       <Card className="bg-slate-900/50 border-slate-800">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
+            <CardTitle className="text-lg md:text-xl text-white flex items-center gap-2">
               <Users className="w-5 h-5 text-blue-400" />
               Últimos Leads do SDR
             </CardTitle>
-            <CardDescription className="text-slate-500">Leads qualificados pelo WhatsApp nas últimas 48h.</CardDescription>
+            <CardDescription className="text-slate-500 text-xs md:text-sm">Leads qualificados pelo WhatsApp nas últimas 48h.</CardDescription>
           </div>
           <Link href="/leads" className="text-xs text-slate-500 hover:text-white transition-colors flex items-center gap-1">
             Ver todos <ArrowUpRight className="w-3 h-3" />
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
           {metrics.leadsRecentes.length === 0 ? (
             <p className="text-sm text-slate-500 italic">Nenhum lead nas últimas 48h.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
               {metrics.leadsRecentes.map((lead) => {
                 const urgencyColor =
                   lead.urgency === "HIGH" ? "border-red-500/40 bg-red-950/10" :

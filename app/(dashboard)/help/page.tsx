@@ -51,7 +51,7 @@ const faqs = [
 
 export default function HelpPage() {
   return (
-    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-16 md:pb-0">
       {/* Search Header */}
       <div className="text-center space-y-4 py-12 bg-slate-900/40 rounded-3xl border border-slate-800 border-dashed">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-bold uppercase tracking-widest">

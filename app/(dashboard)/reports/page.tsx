@@ -27,9 +27,9 @@ export default async function ReportsPage() {
   ]);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
       <div>
-        <h1 className="text-3xl font-bold text-white">Relatórios e Performance</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Relatórios e Performance</h1>
         <p className="text-slate-400 mt-1">
           Análise detalhada de leads, ativos e transações da sua conta.
         </p>

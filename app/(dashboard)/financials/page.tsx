@@ -19,10 +19,10 @@ export const dynamic = "force-dynamic";
 
 export default async function FinancialsPage() {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16 md:pb-0">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
           <div className="p-2 bg-emerald-600/10 rounded-lg border border-emerald-500/20">
             <BadgeDollarSign className="w-7 h-7 text-emerald-500" />
           </div>

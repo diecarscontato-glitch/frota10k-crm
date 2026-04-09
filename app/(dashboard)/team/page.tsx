@@ -35,10 +35,10 @@ export default async function TeamPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight flex items-center gap-3">
             <Users className="w-8 h-8 text-blue-500" />
             Minha Equipe
           </h1>

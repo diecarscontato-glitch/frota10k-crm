@@ -66,10 +66,10 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     : [];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16 md:pb-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">{lead.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white mb-2">{lead.name}</h1>
           <p className="text-slate-400">Detalhes completos do lead e andamento da negociação.</p>
         </div>
         <div className="flex items-center gap-4">

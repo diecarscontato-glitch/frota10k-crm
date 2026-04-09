@@ -49,16 +49,16 @@ export default async function AssetsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-16 md:pb-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-white">Gestão de Ativos</h1>
-          <p className="text-slate-400 mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Gestão de Ativos</h1>
+          <p className="text-slate-400 mt-1 text-sm md:text-base">
             Controle técnico e comercial de veículos e motocicletas.
           </p>
         </div>
         <Link href="/assets/new">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2 w-full sm:w-auto">
             <Plus className="w-4 h-4" />
             Cadastrar Veículo
           </Button>
@@ -66,7 +66,7 @@ export default async function AssetsPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
          <Card className="bg-slate-900/40 border-slate-800 flex items-center p-4 gap-4">
             <div className="p-3 bg-blue-500/10 rounded-xl">
                <Car className="w-6 h-6 text-blue-500" />
@@ -100,8 +100,8 @@ export default async function AssetsPage() {
          </Card>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-        <div className="flex-1 min-w-[300px] relative">
+      <div className="flex flex-wrap items-center gap-3 md:gap-4 bg-slate-900/50 p-3 md:p-4 rounded-xl border border-slate-800">
+        <div className="flex-1 min-w-0 sm:min-w-[300px] relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
           <input
             placeholder="Buscar por placa, modelo ou CPF..."
@@ -119,7 +119,7 @@ export default async function AssetsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {assets.length === 0 ? (
           <div className="col-span-full h-60 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-3xl text-slate-600">
              <Car className="w-12 h-12 mb-4 opacity-20" />

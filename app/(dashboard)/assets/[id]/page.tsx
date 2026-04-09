@@ -73,7 +73,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16 md:pb-0">
       <div className="flex items-center justify-between">
          <Link href="/assets" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm group">
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -97,7 +97,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
                   </div>
                   <div>
                      <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold text-white">{asset.model}</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-white">{asset.model}</h1>
                         <span className={cn(
                           "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
                           getStatusColor(asset.status)
