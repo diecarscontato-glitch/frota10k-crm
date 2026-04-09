@@ -3,15 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wallet, Search, CheckCircle, FileText, RefreshCw } from "lucide-react";
-import { getWalletBalance, requestM12Service, getAssetServiceOrders, addWalletFunds } from "@/app/actions/m12";
+import { Wallet, CheckCircle, FileText, AlertTriangle } from "lucide-react";
+import { getWalletBalance, getAssetServiceOrders } from "@/app/actions/m12";
 import { cn } from "@/lib/utils";
 
 export function M12Marketplace({ assetId }: { assetId: string }) {
   const [balance, setBalance] = useState<number>(0);
   const [orders, setOrders] = useState<any[]>([]);
-  const [loadingType, setLoadingType] = useState<string | null>(null);
-  const [addingFunds, setAddingFunds] = useState(false);
 
   const fetchDashboard = React.useCallback(async () => {
     try {
@@ -30,31 +28,6 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
     fetchDashboard();
   }, [fetchDashboard]);
 
-  const handleConsult = async (type: "DOSSIE_JURIDICO" | "DOSSIE_VEICULAR") => {
-    if (!assetId) return alert("Nenhum ativo vinculado a este lead.");
-    setLoadingType(type);
-    try {
-      await requestM12Service(assetId, type);
-      await fetchDashboard();
-    } catch (err: any) {
-      alert(err.message || "Erro ao solicitar consulta.");
-    } finally {
-      setLoadingType(null);
-    }
-  };
-
-  const handleAddFundsMock = async () => {
-    setAddingFunds(true);
-    try {
-      await addWalletFunds(100.0); // Adds R$ 100
-      await fetchDashboard();
-    } catch (err) {
-      alert("Erro ao debitar");
-    } finally {
-      setAddingFunds(false);
-    }
-  };
-
   if (!assetId) {
     return (
       <div className="p-4 border border-slate-800 rounded-lg bg-slate-900/50 text-slate-400 text-sm">
@@ -65,38 +38,39 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Wallet Block */}
-      <div className="flex items-center justify-between p-4 bg-slate-800/40 rounded-xl border border-slate-700/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center border border-blue-500/30">
-            <Wallet className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-slate-400">Saldo Disponível (M12 Wallet)</p>
-            <h3 className="text-2xl font-bold text-white tracking-widest">
-              R$ {balance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-            </h3>
-          </div>
+      {/* Aviso: integração em desenvolvimento */}
+      <div className="flex items-start gap-3 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+        <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="text-sm">
+          <p className="font-semibold text-amber-300">Integração M12 em desenvolvimento</p>
+          <p className="text-amber-200/80 mt-1">
+            As ordens de serviço automáticas estão temporariamente desativadas. Solicite dossiês manualmente pelo contato{" "}
+            <span className="font-mono">contato@m12.com.br</span>. Esta área volta a operar assim que a integração oficial for liberada.
+          </p>
         </div>
-        <Button 
-           onClick={handleAddFundsMock} 
-           disabled={addingFunds}
-           variant="outline" 
-           className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
-        >
-          {addingFunds ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Wallet className="w-4 h-4 mr-2" />}
-          + R$ 100,00 (Teste)
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Card Dossiê Jurídico */}
+      {/* Wallet (read-only) */}
+      <div className="flex items-center gap-3 p-4 bg-slate-800/40 rounded-xl border border-slate-700/50">
+        <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center border border-blue-500/30">
+          <Wallet className="w-5 h-5" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-slate-400">Saldo histórico (M12 Wallet)</p>
+          <h3 className="text-2xl font-bold text-white tracking-widest">
+            R$ {balance.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+          </h3>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-60 pointer-events-none">
+        {/* Card Dossiê Jurídico — desabilitado */}
         <Card className="bg-slate-900 border-slate-800 flex flex-col">
           <CardHeader className="pb-3 border-b border-slate-800/50">
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-white text-lg">Dossiê Jurídico Cível/Trabalhista</CardTitle>
-                <CardDescription>Ordem de Serviço enviada diretamente à M12.</CardDescription>
+                <CardDescription>Temporariamente indisponível — pedir manualmente.</CardDescription>
               </div>
               <span className="bg-slate-800 text-white font-mono px-3 py-1 rounded-full text-sm font-bold border border-slate-700">
                 R$ 60,00
@@ -112,24 +86,19 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
             </ul>
           </CardContent>
           <CardFooter className="pt-0">
-            <Button 
-              onClick={() => handleConsult("DOSSIE_JURIDICO")}
-              disabled={loadingType === "DOSSIE_JURIDICO" || balance < 60}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loadingType === "DOSSIE_JURIDICO" ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
-              Solicitar Ordem de Serviço
+            <Button disabled className="w-full bg-slate-700 cursor-not-allowed">
+              Em breve
             </Button>
           </CardFooter>
         </Card>
 
-        {/* Card Dossiê Veicular */}
+        {/* Card Dossiê Veicular — desabilitado */}
         <Card className="bg-slate-900 border-slate-800 flex flex-col">
           <CardHeader className="pb-3 border-b border-slate-800/50">
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-white text-lg">Dossiê Veicular Completo</CardTitle>
-                <CardDescription>Ordem de Serviço enviada diretamente à M12.</CardDescription>
+                <CardDescription>Temporariamente indisponível — pedir manualmente.</CardDescription>
               </div>
               <span className="bg-slate-800 text-white font-mono px-3 py-1 rounded-full text-sm font-bold border border-slate-700">
                 R$ 80,00
@@ -145,13 +114,8 @@ export function M12Marketplace({ assetId }: { assetId: string }) {
             </ul>
           </CardContent>
           <CardFooter className="pt-0">
-            <Button 
-              onClick={() => handleConsult("DOSSIE_VEICULAR")}
-              disabled={loadingType === "DOSSIE_VEICULAR" || balance < 80}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loadingType === "DOSSIE_VEICULAR" ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
-              Solicitar Ordem de Serviço
+            <Button disabled className="w-full bg-slate-700 cursor-not-allowed">
+              Em breve
             </Button>
           </CardFooter>
         </Card>
