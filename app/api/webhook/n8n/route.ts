@@ -281,11 +281,15 @@ function extrairVeiculo(msg: string): { modelo?: string; ano?: number; cidade?: 
     "contagem", "juiz de fora", "feira de santana", "santos", "maringá", "maringa",
   ];
 
-  const lower = clean.toLowerCase();
+  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const lowerNorm = normalize(clean);
   for (const cidade of cidades) {
-    if (lower.includes(cidade)) {
+    const cidadeNorm = normalize(cidade);
+    if (lowerNorm.includes(cidadeNorm)) {
       result.cidade = cidade.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-      clean = clean.replace(new RegExp(cidade, "i"), "").trim();
+      // Remove cidade from clean string (accent-insensitive)
+      const idx = lowerNorm.indexOf(cidadeNorm);
+      clean = (clean.substring(0, idx) + clean.substring(idx + cidade.length)).trim();
       break;
     }
   }
