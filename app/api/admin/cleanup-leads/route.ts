@@ -4,11 +4,11 @@ import { db } from "@/lib/db";
 const SYNC_KEY = process.env.FROTA10K_SYNC_KEY || "diecar-sync-2026";
 
 /**
- * DELETE /api/admin/cleanup-leads
+ * POST /api/admin/cleanup-leads
  * Remove leads de teste pelo telefone.
  * Body: { telefones: ["11981205759", "11999999999", ...] }
  */
-export async function DELETE(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const apiKey = req.headers.get("x-sync-key");
   if (apiKey !== SYNC_KEY) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
