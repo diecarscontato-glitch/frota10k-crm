@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sendMetaLeadEvent } from "@/lib/meta-capi";
 
 // Chave de autenticação compartilhada com os agentes Node.js
 const SYNC_KEY = process.env.FROTA10K_SYNC_KEY || "diecar-sync-2026";
@@ -128,6 +129,19 @@ export async function POST(req: NextRequest) {
         },
       });
       console.log(`[SYNC] Novo lead criado: #${lead.id} — ${nome}`);
+
+      // Conversions API (Meta) — fire-and-forget, só para leads vindos do WhatsApp
+      const veioDoWhatsApp = String(leadData.source ?? "").toLowerCase().includes("whatsapp");
+      if (veioDoWhatsApp) {
+        const ctwaClid = typeof body.ctwa_clid === "string" ? body.ctwa_clid : null;
+        sendMetaLeadEvent({
+          phone: String(telefone),
+          city: typeof body.cidade === "string" ? body.cidade : null,
+          state: typeof body.estado === "string" ? body.estado : null,
+          leadId: lead.id,
+          ctwaClid,
+        }).catch((err) => console.log(`[SYNC] CAPI falhou (silencioso): ${err.message}`));
+      }
     }
 
     // ── Criar/atualizar ativo se tiver dados de veículo ───────────────────────
